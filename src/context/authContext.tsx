@@ -10,7 +10,7 @@ interface AuthContextType {
   loggingOut: boolean;
   login: (token: JWTToken, userID: UserID, expiry: JWTExpiry) => void;
   logout: () => void;
-  checkAuth: (lang: Language) => void
+  checkNewLangAuth: (lang: Language) => void
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -19,7 +19,7 @@ const AuthContext = createContext<AuthContextType>({
   loggingOut: false,
   login: () => { },
   logout: () => { },
-  checkAuth: () => { },
+  checkNewLangAuth: () => { },
 });
 
 interface AuthProviderProps {
@@ -68,7 +68,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         return () => clearTimeout(timer);
       }
     }
+  }
 
+  const checkNewLangAuth = (newLang: Language) => {
+    const userData = localStorage.getItem(`userData_${newLang}`);
+    if (!userData) {
+      setToken(null)
+      setUserID(null)
+      navigate("/")
+    } else {
+      checkAuth(newLang)
+    }
   }
 
   const login = (token: JWTToken, userID: UserID, expiry: JWTExpiry) => {
@@ -89,7 +99,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [navigate]);
 
   return (
-    <AuthContext.Provider value={{ token, userID, login, logout, loggingOut, checkAuth }}>
+    <AuthContext.Provider value={{ token, userID, login, logout, loggingOut, checkNewLangAuth }}>
       {children}
     </AuthContext.Provider>
   );

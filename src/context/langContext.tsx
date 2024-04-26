@@ -23,12 +23,12 @@ interface LangProviderProps {
 const LangProvider = ({ children }: LangProviderProps) => {
   const [serverUrl, setServerUrl] = useState(GO_BASE_URL)
   const [language, setLanguage] = useState(Language.GO)
-  const { checkAuth } = useContext(AuthContext)
+  const { checkNewLangAuth } = useContext(AuthContext)
 
   const changeLanguage = (language: Language) => {
     setLanguage(language)
     setServerUrl(LANG_MAP[language])
-    checkAuth(language)
+    checkNewLangAuth(language)
   }
 
   return (<LangContext.Provider value={{ changeLanguage, language, serverUrl }}>
