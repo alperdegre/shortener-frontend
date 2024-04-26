@@ -1,7 +1,6 @@
 import { Language } from "@/lib/types";
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext } from "react";
 import { GO_BASE_URL, LANG_MAP } from "@/lib/utils";
-import { AuthContext } from "./authContext";
 
 
 interface LangContextType {
@@ -23,12 +22,10 @@ interface LangProviderProps {
 const LangProvider = ({ children }: LangProviderProps) => {
   const [serverUrl, setServerUrl] = useState(GO_BASE_URL)
   const [language, setLanguage] = useState(Language.GO)
-  const { checkNewLangAuth } = useContext(AuthContext)
 
   const changeLanguage = (language: Language) => {
     setLanguage(language)
     setServerUrl(LANG_MAP[language])
-    checkNewLangAuth(language)
   }
 
   return (<LangContext.Provider value={{ changeLanguage, language, serverUrl }}>

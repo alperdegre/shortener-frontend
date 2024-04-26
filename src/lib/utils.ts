@@ -14,4 +14,5 @@ export const LANG_MAP: Record<Language, string> = {
 }
 export const PROTECTED_ROUTES = [
   "/dashboard",
+  "/shorten"
 ]

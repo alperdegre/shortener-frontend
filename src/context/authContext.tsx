@@ -10,7 +10,6 @@ interface AuthContextType {
   loggingOut: boolean;
   login: (token: JWTToken, userID: UserID, expiry: JWTExpiry) => void;
   logout: () => void;
-  checkNewLangAuth: (lang: Language) => void
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -19,7 +18,6 @@ const AuthContext = createContext<AuthContextType>({
   loggingOut: false,
   login: () => { },
   logout: () => { },
-  checkNewLangAuth: () => { },
 });
 
 interface AuthProviderProps {
@@ -37,6 +35,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     checkAuth(language)
   }, []);
+
+  useEffect(() => {
+    checkAuth(language)
+  }, [language])
 
   useEffect(() => {
     if (PROTECTED_ROUTES.includes(location.pathname) && !token) {
@@ -67,17 +69,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
         return () => clearTimeout(timer);
       }
-    }
-  }
-
-  const checkNewLangAuth = (newLang: Language) => {
-    const userData = localStorage.getItem(`userData_${newLang}`);
-    if (!userData) {
-      setToken(null)
-      setUserID(null)
-      navigate("/")
     } else {
-      checkAuth(newLang)
+      console.log("out")
+      if (PROTECTED_ROUTES.includes(location.pathname)) {
+        logout()
+      } else {
+        setToken(null)
+        setUserID(null)
+      }
     }
   }
 
@@ -95,11 +94,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoggingOut(false);
       navigate("/");
       setUserID(null);
-    }, 1000);
+    }, 500);
   }, [navigate]);
 
   return (
-    <AuthContext.Provider value={{ token, userID, login, logout, loggingOut, checkNewLangAuth }}>
+    <AuthContext.Provider value={{ token, userID, login, logout, loggingOut }}>
       {children}
     </AuthContext.Provider>
   );
